@@ -1,0 +1,133 @@
+Map.setCenter(-73.99172, 40.74101, 12);
+
+
+var dataset = ee.ImageCollection('USGS/NLCD');
+var landcover = dataset.select('landcover');
+var landcoverVis = {
+  min: 0.0,
+  max: 95.0,
+  palette: [
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '466b9f',
+    'd1def8',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    'dec5c5',
+    'd99282',
+    'eb0000',
+    'ab0000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    'b3ac9f',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '68ab5f',
+    '1c5f2c',
+    'b5c58f',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    'af963c',
+    'ccb879',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    'dfdfc2',
+    'd1d182',
+    'a3cc51',
+    '82ba9e',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    'dcd939',
+    'ab6c28',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    'b8d9eb',
+    '000000',
+    '000000',
+    '000000',
+    '000000',
+    '6c9fb8'
+  ],
+};
+
+Map.addLayer(landcover, landcoverVis, 'Landcover');
+
+//
+
+var dataset = ee.FeatureCollection('TIGER/2016/Roads');
+var roads = dataset.style({color: '#4285F4', width: 1});
+Map.addLayer(roads, {}, 'TIGER/2016/Roads');
+
+//
+
+var dataset = ee.FeatureCollection('TIGER/2010/Blocks');
+var visParams = {
+  min: 0.0,
+  max: 700.0,
+  palette: ['black', 'brown', 'yellow', 'orange', 'red']
+};
+// Turn the strings into numbers
+dataset = dataset.map(function (f) {
+  return f.set('pop10', ee.Number.parse(f.get('pop10')));
+});
+
+var image = ee.Image().float().paint(dataset, 'pop10');
+
+Map.addLayer(image, visParams, 'TIGER/2010/Blocks');
+Map.addLayer(dataset, null, 'for Inspector', false);
