@@ -1,5 +1,3 @@
-
-
 Map.setCenter(-73.99172, 40.74101, 13);
 
 //NED coverage in US only at 10 meters per pixel
@@ -12,6 +10,21 @@ var hillshade = ee.Algorithms.HillShadow(elevation, 135, 85, 0, false); //simula
 
 var aspect = ee.Terrain.aspect(elevation);                              //what direction does a slope face?
 
+/////////////////////////////////////
+
+var lines = ee.List.sequence(-10, 100, 2);
+ 
+var contourlines = lines.map(function(line) {
+var mycontour = elevation
+.convolve(ee.Kernel.gaussian(5, 3))
+.subtract(ee.Image.constant(line)).zeroCrossing()
+.multiply(ee.Image.constant(line)).toFloat();
+return mycontour.mask(mycontour);});
+ 
+contourlines = ee.ImageCollection(contourlines).mosaic();
+
+/////////////////////////////////////
+
 var elevationVis = {min: -5, max: 50.0, gamma: 1.5};
 Map.addLayer(elevation, elevationVis, 'Elevation');
 
@@ -23,6 +36,9 @@ Map.addLayer(hillshade, hillshadeVis, 'Hillshade');
 
 var aspectVis = {min: 0, max: 359, gamma: 1};
 Map.addLayer(aspect, aspectVis, 'Aspect');
+
+var contourVis = {min: -10, max: 100, palette:['00ff00', 'ff0000']};
+Map.addLayer(contourlines, contourVis, 'contours');
 
 var elevation = elevation.visualize(elevationVis);
 Export.image.toDrive({
@@ -47,3 +63,9 @@ Export.image.toDrive({
   image: aspect,
   description: 'Aspect',
   scale: 10});
+  
+var contourlines = contourlines.visualize(contourVis);
+Export.image.toDrive({
+  image: contourlines,
+  description: 'ContourLines',
+  scale: 1});
