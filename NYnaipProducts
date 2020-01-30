@@ -16,7 +16,7 @@ var dataset3 = ee.ImageCollection('USDA/NAIP/DOQQ')
 
 //most recent true color image
                  
-var falseColor1 = dataset1.select(['R', 'G', 'B']);
+var falseColor1 = dataset3.select(['N', 'R', 'G']);
 var falseColorVis = {
   min: 40.0,
   max: 185.0,
