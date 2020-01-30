@@ -21,7 +21,7 @@ var falseColorVis = {
   min: 40.0,
   max: 185.0,
 };
-var falseColorImage = falseColor1.median();
+var falseColorImage = falseColor1.mode();
 
 //calculate most recent normalized difference vegetation index
 
