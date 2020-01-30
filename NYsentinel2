@@ -114,4 +114,5 @@ var ratiosRGB = ratios.visualize({
 Export.image.toDrive({
   image: ratiosRGB,
   description: 'RGBratios',
+  crs: 'EPSG:3395',
   scale: 10});
