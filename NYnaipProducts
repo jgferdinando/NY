@@ -1,6 +1,6 @@
 //GIS data for NYC
 
-Map.setCenter(-73.962425, 40.787890, 12); 
+Map.setCenter(-73.962425, 40.787890, 11); 
 
 //Get National Agriculture Imagery Program (NAIP) data. 
 //"The program began with a 5-year cycle in 2003 then switched over to a 3-year cycle in 2009, with 2008 being a transition year."
@@ -16,13 +16,12 @@ var dataset3 = ee.ImageCollection('USDA/NAIP/DOQQ')
 
 //most recent true color image
                  
-var trueColor1 = dataset1.select(['R', 'G', 'B']);
-var trueColorVis = {
+var falseColor1 = dataset1.select(['R', 'G', 'B']);
+var falseColorVis = {
   min: 40.0,
   max: 185.0,
 };
-var trueColorImage = trueColor1.median();
-Map.addLayer(trueColorImage, trueColorVis, 'True Color');
+var falseColorImage = falseColor1.median();
 
 //calculate most recent normalized difference vegetation index
 
@@ -42,21 +41,35 @@ var ndviDiff = ndvi3.subtract(ndvi1);
 var ndviRatio = ndvi3.divide(ndvi1);
 
 var ndviVis = {min:-0.5, max:1, opacity:1};
-Map.addLayer(ndvi1, ndviVis, 'NDVI 1');
-Map.addLayer(ndvi2, ndviVis, 'NDVI 2');
+
+var clipRectangle = ee.Geometry.Rectangle([-74.059501, 40.688802, -73.886690, 40.885781]);
+var ndvi3 = ndvi3.clip(clipRectangle);
+var falseColorImage = falseColorImage.clip(clipRectangle);
+
+//Map.addLayer(ndvi1, ndviVis, 'NDVI 1');
+//Map.addLayer(ndvi2, ndviVis, 'NDVI 2');
 Map.addLayer(ndvi3, ndviVis, 'NDVI 3');
-Map.addLayer(ndviDiff, ndviVis, 'NDVI Difference');
-Map.addLayer(ndviRatio, ndviVis, 'NDVI Ratio');
+//Map.addLayer(ndviDiff, ndviVis, 'NDVI Difference');
+//Map.addLayer(ndviRatio, ndviVis, 'NDVI Ratio');
+
+Map.addLayer(falseColorImage, falseColorVis, 'False Color');
 
 var multiband = ee.Image([ndvi3, ndvi2, ndvi1]);
 
-Map.addLayer(multiband, ndviVis, 'NDVI Multitemporal RGB');
+//Map.addLayer(multiband, ndviVis, 'NDVI Multitemporal RGB');
 
 
 
-var trueColorImage = trueColorImage.visualize(trueColorVis);
+var ndvi3 = ndvi3.visualize(ndviVis);
 Export.image.toDrive({
-  image: trueColorImage,
-  description: 'trueColorImage',
+  image: ndvi3,
+  description: 'ndviImage',
+  crs: 'EPSG:3395',
+  scale: 1});
+
+var falseColorImage = falseColorImage.visualize(falseColorVis);
+Export.image.toDrive({
+  image: falseColorImage,
+  description: 'falseColorImage',
   crs: 'EPSG:3395',
   scale: 1});
