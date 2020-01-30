@@ -44,28 +44,33 @@ var elevation = elevation.visualize(elevationVis);
 Export.image.toDrive({
   image: elevation,
   description: 'Elevation',
+  crs: 'EPSG:3395',
   scale: 10});
 
 var slope = slope.visualize(slopeVis);
 Export.image.toDrive({
   image: slope,
   description: 'Slope',
+  crs: 'EPSG:3395',
   scale: 10});
   
 var hillshade = hillshade.visualize(hillshadeVis);
 Export.image.toDrive({
   image: hillshade,
   description: 'Hillshade',
+  crs: 'EPSG:3395',
   scale: 10});
 
 var aspect = aspect.visualize(aspectVis);
 Export.image.toDrive({
   image: aspect,
   description: 'Aspect',
+  crs: 'EPSG:3395',
   scale: 10});
   
 var contourlines = contourlines.visualize(contourVis);
 Export.image.toDrive({
   image: contourlines,
   description: 'ContourLines',
+  crs: 'EPSG:3395',
   scale: 1});
