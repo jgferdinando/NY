@@ -58,4 +58,5 @@ var trueColorImage = trueColorImage.visualize(trueColorVis);
 Export.image.toDrive({
   image: trueColorImage,
   description: 'trueColorImage',
+  crs: 'EPSG:3395',
   scale: 1});
